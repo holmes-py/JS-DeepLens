@@ -1,6 +1,7 @@
-# JS Ultra Parse Dashboard
+# JS DeepLens 🔎
 
 A modern, interactive dashboard for analyzing JavaScript files captured by Burp Suite, with live updates, regex and AST analysis, and optional LLM (Google Gemini) integration. Designed for security researchers and bug bounty hunters who want deep, customizable JS analysis with a beautiful, responsive UI.
+Credits: Gemini Pro 2.5 Advanced and my subpar manipulation skills.   
 
 ---
 
@@ -107,6 +108,11 @@ node server.js --project myproject
 - **JS Source:** Click “View JS” to see the code in a side pane.
 - **AST/LLM:** Use the “AST” button or “LLM” dropdown for deeper analysis (if enabled).
 
+### 5. Thanks
+- Gemini Team for making something so good. 
+- `gf` tool's team for making amazing regexes that I've copied. 
+- Triple digit AQI that stopped me from going outside and hence forced me to sit on my desk.
+
 ---
 
 ## Directory Structure
@@ -155,13 +161,21 @@ js-ultra-parse-dashboard/
 - Only JS files (no inline JS from HTML)
 - New findings may lack DB ID until reload
 - LLM results are returned in batch
+- Broken (TODO) Regex matches 
 
+## TODO  
+(Some of these are fixed in private branch, but I am not releasing that for obvious reasons.)
+
+- [ ] Fix the broken Regex Matches: The backend functionality is operational, but the UI needs adjustments to properly display the matches. (pun intended)
+- [ ] Make the 'Source Map Detected' button clickable to download the map. 
+- [ ] Batch download button for JS/Maps same as the one that exists for LLM  
+  
 ---
 
 ## License
 
 **I-DONT-GIVE-A-DAMN License:**  
-Use as you wish. If it breaks, I will laugh.
+Use as you wish. If (sh)it breaks, I will laugh.
 
 ---
 
