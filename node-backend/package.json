@@ -1,0 +1,43 @@
+{
+  "name": "js-ultra-parse-dashboard",
+  "version": "1.8.0",
+  "description": "Live dashboard for Burp JS analysis with optional AST/LLM, JS viewing, project support, scope, pattern selection, infinite scroll.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "start:project": "node server.js --project",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "burp",
+    "javascript",
+    "analysis",
+    "security",
+    "dashboard",
+    "live",
+    "websocket",
+    "socket.io",
+    "project",
+    "scope",
+    "patterns",
+    "regex",
+    "ast",
+    "acorn",
+    "llm",
+    "gemini"
+  ],
+  "author": "Holmes",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.14.0",
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "socket.io": "^4.7.5",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "yargs": "^17.7.2"
+  }
+}

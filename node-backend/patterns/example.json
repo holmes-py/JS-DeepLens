@@ -1,0 +1,17 @@
+{
+    "flags": "-iE",
+    "patterns": [
+        "api_key\\s*[:=]\\s*['\\\"][a-z0-9_\\-]{16,}['\\\"]",
+        "secret\\s*[:=]\\s*['\\\"][a-z0-9_\\-]{16,}['\\\"]",
+        "token\\s*[:=]\\s*['\\\"][a-z0-9_\\-\\.]{16,}['\\\"]",
+        "password\\s*[:=]",
+        "aws_access_key_id",
+        "aws_secret_access_key",
+        "BEGIN RSA PRIVATE KEY",
+        "\\.executeSql\\(",
+        "localStorage\\.setItem",
+        "sessionStorage\\.setItem",
+        "document\\.cookie",
+        "\\b(http|https)?://[a-zA-Z0-9\\-\\.]+\\.[a-zA-Z]{2,}(?:/[^'\"\\s]*)?"
+    ]
+}
