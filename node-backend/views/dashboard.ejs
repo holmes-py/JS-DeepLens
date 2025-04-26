@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS Ultra Parse Dashboard - <%= projectName %></title>
+    <title>JS DeepLens 🔎 - <%= projectName %></title>
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
     <%# Link to your local CSS file %>
@@ -32,7 +32,7 @@
 <%# Body tag includes data attributes for script.js %>
 <body data-initial-offset="<%= initialOffset %>" data-initial-has-more="<%= initialHasMore %>" data-llm-enabled="<%= isLLMEnabled %>">
     <header>
-        <h1> JS Ultra Parse Dashboard (Live) <span class="project-name">Project: <%= projectName %></span> </h1>
+        <h1> JS DeepLens 🔎 <span class="project-name">Project: <%= projectName %></span> </h1>
         <div class="stats">
              <div>Ext Prcsd: <span id="requests-processed"><%= initialStats.requestsProcessedByExtension %></span></div>
              <div>JS Rcvd: <span id="js-received"><%= initialStats.jsFilesReceivedForAnalysis %></span></div>

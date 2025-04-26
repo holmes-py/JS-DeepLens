@@ -1,24 +1,18 @@
 # JS DeepLens 🔎
 
-A modern, interactive dashboard for analyzing JavaScript files captured by Burp Suite, with live updates, regex and AST analysis, and optional LLM (Google Gemini) integration. Designed for security researchers and bug bounty hunters who want deep, customizable JS analysis with a beautiful, responsive UI.
+A modern, interactive dashboard for analyzing JavaScript files captured by Burp Suite, with live updates, regex and AST analysis, and optional LLM (Google Gemini) integration. Designed for security researchers and bug bounty hunters who want deep, customizable JS analysis with a beautiful, responsive UI.  
 Credits: Gemini Pro 2.5 Advanced and my subpar manipulation skills.   
 
 ---
 
 ## Features
 
-- **Live Dashboard:** Real-time updates via WebSockets (Socket.IO).
-- **Burp Suite Integration:** Receives HTTP response and JS file data from a companion Burp extension.
-- **Regex Pattern Analysis:** User-selectable regex patterns (from JSON files) to scan JS for secrets, endpoints, and more.
-- **AST Analysis:** On-demand structural analysis using Acorn, with results shown inline.
-- **LLM Integration (Optional):** Trigger Google Gemini API for advanced analysis (default, with AST, or custom prompt).
-- **Source Map Detection:** Clearly labeled “Source Map” badge (green) for JS files with detected source maps.
-- **Project Isolation:** Each project uses its own SQLite database and JS file storage.
-- **Scope Filtering:** UI for include/exclude URL regexes to control what gets analyzed.
-- **Pattern Selection:** UI to choose which regex pattern files are active.
-- **JS Source Viewer:** Syntax-highlighted, line-wrapped JS source in a side pane.
-- **Pagination:** “Show More” button to load additional findings.
-- **Responsive UI:** Clean, modern design with clear status, tooltips, and accessibility in mind.
+- **Live Dashboard & Burp Suite Integration:** Real-time updates and analysis of JavaScript files captured via a Burp Suite extension.
+- **Regex & AST Analysis:** Scan JS files for secrets, endpoints, and more using user-selectable regex patterns and on-demand AST (Acorn) analysis. Regex matches are shown in a structured, readable way.
+- **LLM Integration (Optional):** Use Google Gemini for advanced analysis, including batch and prompt-customizable LLM runs (15 free requests/minute; API key required).
+- **Project Isolation & Scope Control:** Each project uses its own SQLite DB and JS storage. Easily filter analysis scope with include/exclude URL regexes and pattern selection.
+- **Modern, Responsive UI:** Syntax-highlighted JS viewer, sortable/paginated findings, re-scan button, and clear status indicators. All features accessible via a clean, accessible interface.
+- **Source Map Detection:** Instantly see which JS files have source maps with a clear badge.
 
 ---
 
@@ -46,8 +40,8 @@ Credits: Gemini Pro 2.5 Advanced and my subpar manipulation skills.
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository_url> js-ultra-parse-dashboard
-cd js-ultra-parse-dashboard
+git clone <repository_url> JS-DeepLens
+cd JS-DeepLens
 ```
 
 ### 2. Backend Setup
@@ -55,26 +49,35 @@ cd js-ultra-parse-dashboard
 ```bash
 cd node-backend
 npm install
-mkdir -p patterns public database js_files
 ```
 
-- **Add Pattern Files:** Place your `.json` regex pattern files in `node-backend/patterns/` (examples included).
-- **(Optional) Add Favicon:** Place `favicon.ico` in `node-backend/public/`.
-- **(Optional) LLM:** Set your Gemini API key:  
+- Place your `.json` regex pattern files in `node-backend/patterns/` (examples included).
+- (Optional) Add `favicon.ico` to `node-backend/public/`.
+
+### 3. (Optional) Enable LLM (Google Gemini) Features
+
+- **Free Tier:** Google Gemini allows up to **15 requests per minute for free** (as of June 2024).
+- **How to Generate a Gemini API Key:**
+  1. Go to [Google AI Studio API Keys](https://aistudio.google.com/app/apikey) and sign in with your Google account.
+  2. Click "Create API Key" and follow the prompts.
+  3. Copy your API key.
+- **Set your Gemini API key as an environment variable:**
   ```bash
   export GEMINI_API_KEY='your-key-here'
   ```
+  (Add this to your `.bashrc`, `.zshrc`, or equivalent for persistence.)
 
-### 3. Burp Extension Setup
+### 4. Burp Extension Setup
 
 - Download `requests` for Jython:
   ```bash
-  mkdir -p ~/jython_libs
-  pip2 install --target=~/jython_libs requests
+  cd burp-extension
+  mkdir -p jython_libs
+  pip2 install --target=jython_libs requests
   ```
 - In Burp Suite:
   - Set Jython JAR path (e.g., `burp-extension/Jython Standalone 2.7.4.jar`)
-  - Set “Folder for loading modules” to your Jython libs folder (e.g., `~/jython_libs`)
+  - Set "Folder for loading modules" to your Jython libs folder (e.g., `jython_libs`)
   - Load `burp-extension/js_sender_extension.py` in the Extender tab
 
 ---
@@ -88,7 +91,7 @@ cd node-backend
 node server.js --project myproject
 ```
 
-- The server will create a SQLite DB in `database/` and store JS files in `js_files/`.
+- The server will create a SQLite DB in `projects/<projectname>/database/` and store JS files in `projects/<projectname>/js_files/`.
 - The project name is used for DB and file isolation.
 
 ### 2. Use Burp Suite
@@ -102,11 +105,15 @@ node server.js --project myproject
 ### 4. Configure & Analyze
 
 - **Scope:** Set include/exclude URL regexes in the UI.
-- **Patterns:** Select which regex pattern files to use.
-- **Findings:** View, paginate, and expand findings.
-- **Source Map:** Look for the green “Source Map” badge for files with detected source maps (hover for tooltip).
-- **JS Source:** Click “View JS” to see the code in a side pane.
-- **AST/LLM:** Use the “AST” button or “LLM” dropdown for deeper analysis (if enabled).
+- **Patterns:** Select which regex pattern files to use. Use the "Re-scan Project" button to re-analyze all stored JS with the current patterns.
+- **Findings:** View, paginate, and expand findings. Regex matches are now shown in a structured, readable way.
+- **Show More:** Use the "Show More" button to load additional findings (no infinite scroll yet).
+- **Sorting:** Click the ID column to sort findings by script ID.
+- **Batch LLM Analysis:** Select multiple scripts using the checkboxes and click "Analyze Selected with LLM" to analyze them in a batch.
+- **LLM Prompt Customization:** When using LLM analysis, you can modify the prompt before sending for custom analysis.
+- **Source Map:** Look for the green "Source Map" badge for files with detected source maps (hover for tooltip).
+- **JS Source:** Click "View JS" to see the code in a side pane.
+- **AST/LLM:** Use the "AST" button or "LLM" dropdown for deeper analysis (if enabled).
 
 ### 5. Thanks
 - Gemini Team for making something so good. 
@@ -118,7 +125,7 @@ node server.js --project myproject
 ## Directory Structure
 
 ```
-js-ultra-parse-dashboard/
+JS-DeepLens/
   burp-extension/
     js_sender_extension.py
     Jython Standalone 2.7.4.jar
@@ -161,7 +168,9 @@ js-ultra-parse-dashboard/
 - Only JS files (no inline JS from HTML)
 - New findings may lack DB ID until reload
 - LLM results are returned in batch
-- Broken (TODO) Regex matches 
+- No batch download for JS/maps (still TODO)
+- 'Source Map Detected' badge is not yet clickable for download (still TODO)
+- No infinite scroll (use "Show More" button)
 
 ## TODO  
 (Some of these are fixed in private branch, but I am not releasing that for obvious reasons.)
@@ -174,7 +183,7 @@ js-ultra-parse-dashboard/
 
 ## License
 
-**I-DONT-GIVE-A-DAMN License:**  
+**NO-RESPONSIBILITY License:**  
 Use as you wish. If (sh)it breaks, I will laugh.
 
 ---
