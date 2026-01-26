@@ -1,0 +1,1 @@
+/**/ typeof __jsonp__EuU4L === 'function' && __jsonp__EuU4L({"status":"success"});

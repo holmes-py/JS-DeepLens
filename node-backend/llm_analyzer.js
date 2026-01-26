@@ -18,8 +18,8 @@ export function initializeLLM() {
     }
     try {
         genAI = new GoogleGenerativeAI(apiKey);
-        model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-        console.log("Gemini AI SDK initialized (gemini-1.5-flash-latest).");
+        model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        console.log("Gemini AI SDK initialized (gemini-2.5-flash).");
         llmEnabled = true; return true;
     } catch (error) {
         console.error("-------------------------------------------------------\nERROR: Init Gemini SDK:", error.message, "\nLLM disabled.\n-------------------------------------------------------");

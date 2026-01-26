@@ -1,0 +1,1 @@
+import{a}from"./chunk-axios-11bfc7e9.js";import{r as o}from"./351f9bfe-index.js";function n(){const l=o(a.NONE),e=o(a.NONE);return{MODALS:a,current_modal:l,closeModal:()=>{l.value=a.NONE,e.value!==l.value&&(l.value=e.value,e.value=a.NONE)},closeAllModals:()=>{l.value=a.NONE},openModal:(s=a.ONLY)=>{e.value===l.value?e.value=a.NONE:e.value=l.value,l.value=s}}}export{n as u};

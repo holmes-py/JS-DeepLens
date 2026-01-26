@@ -1,0 +1,1 @@
+/**/ typeof __jsonp__GTJR5 === 'function' && __jsonp__GTJR5({"status":"success"});

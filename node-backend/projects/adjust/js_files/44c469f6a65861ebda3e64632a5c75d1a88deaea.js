@@ -1,0 +1,1 @@
+["adj",["adjective","adjective meaning in hindi","adjacent meaning in hindi","adjust","adjective meaning","adjacent meaning","adjective examples","adjust meaning in hindi","adjust fan","adjacent"],[],{"google:suggestsubtypes":[[512,433],[512],[512],[512,433],[512,433],[512,433],[512,433],[512],[512,433],[512,433]]}]

@@ -1,0 +1,1 @@
+import{a9 as n,aX as u,aY as l,aZ as p}from"./CH8Ac3Zu.js";function h(r=""){const o=n();if(!u())return null;const a=[],{path:e}=o,s=e.split("/").filter(t=>t!=="");l(s[0])&&s.shift();for(const t of s){const c=t.replace(/-/g," ");a.push({name:p(c),path:`${e.split(t)[0]}${t}`})}const i=a.pop();return{attributes:a,root:{name:r||String(i.name),path:e}}}export{h as u};

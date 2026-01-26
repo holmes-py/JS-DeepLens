@@ -1,0 +1,1 @@
+["adjust",["adjust","adjust meaning in hindi","adjust fan","adjustment","adjust fan price","adjustable dumbbells","adjustable spanner","adjustable sunglasses","adjustment in hindi","adjusted purchase formula"],[],{"google:fieldtrialtriggered":true,"google:suggestsubtypes":[[512,433],[512],[512,433],[512,433],[512],[512,433],[512,433,395],[512,433,395],[512,395],[512,395]]}]

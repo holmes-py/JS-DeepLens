@@ -1,0 +1,1 @@
+if(console){var cookiedomainwarning='Error: The domain USER-PORTAL.PARKBEE.NET is not authorized to show the cookie banner for domain group ID 45750d30-8c89-4ddd-8ad5-0e0674b6f9be. Please add it to the domain group in the Cookiebot Manager to authorize the domain.';if(typeof console.warn === 'function'){console.warn(cookiedomainwarning)}else{console.log(cookiedomainwarning)}};

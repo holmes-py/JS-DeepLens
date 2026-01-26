@@ -1,0 +1,1 @@
+window.DIGIOH_API.DIGIOH_PIXEL_THRESHOLDS['ade1e48c-beb6-4d85-a756-e52d683c8d9a'] = {};

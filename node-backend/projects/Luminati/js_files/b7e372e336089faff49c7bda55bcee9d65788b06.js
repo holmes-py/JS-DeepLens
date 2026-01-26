@@ -1,0 +1,1 @@
+/**/ typeof __jsonp__B34xa === 'function' && __jsonp__B34xa({"status":"success"});

@@ -1,0 +1,1 @@
+/**/ typeof __jsonp__jOSp5 === 'function' && __jsonp__jOSp5({"status":"success"});

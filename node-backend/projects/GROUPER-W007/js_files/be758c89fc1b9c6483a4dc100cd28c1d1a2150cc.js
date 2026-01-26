@@ -1,0 +1,1 @@
+import{a as r}from"./chunk-axios-11bfc7e9.js";import{r as e}from"./351f9bfe-index.js";const c=()=>{const o=e(r.NONE);function a(){o.value=r.NONE}function n(t=r.ONLY){o.value=t}return{current_modal:o,closeModal:a,openModal:n}};export{c as m};
