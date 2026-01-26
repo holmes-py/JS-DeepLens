@@ -3,200 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS DeepLens 🔎 - <%= projectName %></title>
+    <title>JS DeepLens — <%= projectName %></title>
+    <meta name="description" content="JavaScript Analysis Dashboard for Security Researchers">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Prism Theme (Okaidia for dark) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
-    <%# Link to your local CSS file %>
+    
+    <!-- Main Styles -->
     <link rel="stylesheet" href="/css/styles.css">
-    <%# Style for Rescan Status (can be moved to styles.css) %>
-    <style>
-        #rescan-status {
-            margin-left: 15px;
-            font-size: 0.9em;
-            font-style: italic;
-            color: var(--text-secondary);
-        }
-        #rescan-status.error {
-            color: #ef4444; /* Match feedback error color */
-        }
-         #rescan-status.success {
-            color: #10b981; /* Match feedback success color */
-        }
-        /* Style for disabled button during scan */
-        #rescan-button:disabled {
-             background-color: #9ca3af !important;
-             cursor: wait !important;
-        }
-    </style>
 </head>
-<%# Body tag includes data attributes for script.js %>
 <body data-initial-offset="<%= initialOffset %>" data-initial-has-more="<%= initialHasMore %>" data-llm-enabled="<%= isLLMEnabled %>">
+    
+    <!-- ========== HEADER ========== -->
     <header>
-        <h1> JS DeepLens 🔎 <span class="project-name">Project: <%= projectName %></span> </h1>
+        <h1>
+            JS DEEPLENS
+            <span class="project-name"><%= projectName %></span>
+        </h1>
         <div class="stats">
-             <div>Ext Prcsd: <span id="requests-processed"><%= initialStats.requestsProcessedByExtension %></span></div>
-             <div>JS Rcvd: <span id="js-received"><%= initialStats.jsFilesReceivedForAnalysis %></span></div>
-             <%# Use totalAnalyzedScripts for the "Findings" count now %>
-             <div>Scripts: <span id="total-findings"><%= initialStats.totalFindings %></span></div>
-             <div>Status: <span id="connection-status" class="connecting">Connecting...</span></div>
-         </div>
+            <div>Processed <span id="requests-processed"><%= initialStats.requestsProcessedByExtension %></span></div>
+            <div>JS Files <span id="js-received"><%= initialStats.jsFilesReceivedForAnalysis %></span></div>
+            <div>Scripts <span id="total-findings"><%= initialStats.totalFindings %></span></div>
+            <div><span id="connection-status" class="connecting">Connecting</span></div>
+        </div>
     </header>
 
+    <!-- ========== MAIN CONTENT ========== -->
     <div class="content-wrapper">
         <main id="main-content-area">
+            
+            <!-- Settings Panels -->
             <div class="settings-container">
+                
+                <!-- Scope Configuration -->
                 <details class="settings-details">
-                     <summary>Scope Configuration</summary>
-                     <div class="settings-content">
-                         <div class="settings-section">
-                             <label for="include-regex">Include URLs (Regex Per Line):</label>
-                             <textarea id="include-regex" rows="3" placeholder=".* (Default: include all)"></textarea>
-                             <label for="exclude-regex">Exclude URLs (Regex Per Line):</label>
-                             <textarea id="exclude-regex" rows="3" placeholder="google-analytics\.com\nsentry\.io"></textarea>
-                             <div class="button-group">
-                                 <button id="save-scope-button" class="save-button">Save Scope</button>
-                             </div>
-                             <div id="scope-feedback" class="feedback"></div>
-                         </div>
-                     </div>
+                    <summary>Scope Configuration</summary>
+                    <div class="settings-content">
+                        <div class="settings-section">
+                            <label for="include-regex">Include URLs (Regex, one per line)</label>
+                            <textarea id="include-regex" rows="3" placeholder=".* (include all by default)"></textarea>
+                        </div>
+                        <div class="settings-section">
+                            <label for="exclude-regex">Exclude URLs (Regex, one per line)</label>
+                            <textarea id="exclude-regex" rows="3" placeholder="google-analytics\.com&#10;sentry\.io"></textarea>
+                        </div>
+                        <div class="button-group">
+                            <button id="save-scope-button" class="action-button save-button">Save Scope</button>
+                        </div>
+                        <div id="scope-feedback" class="feedback"></div>
+                    </div>
                 </details>
-                 <details class="settings-details">
-                     <summary>Regex Pattern Selection</summary>
-                     <div class="settings-content">
-                         <div class="settings-section">
-                             <p style="margin-top:0; margin-bottom: 5px; font-size:0.9em;">Select regex patterns to use (applied to new analysis).</p>
-                             <div id="pattern-list-container" class="pattern-list">Loading...</div>
-                             <div class="button-group">
-                                 <%# Re-scan Button Added Here %>
-                                 <button id="rescan-button" class="action-button ast-button" title="Re-scan all saved JS content using the currently selected patterns. This may take a while.">Re-scan Project</button>
-                                 <button id="save-patterns-button" class="save-button">Save Pattern Selection</button>
-                             </div>
-                             <div id="patterns-feedback" class="feedback"></div>
-                             <%# Re-scan Status Display Area Added Here %>
-                             <div id="rescan-status"></div>
-                         </div>
-                     </div>
+                
+                <!-- Pattern Selection -->
+                <details class="settings-details">
+                    <summary>Pattern Selection</summary>
+                    <div class="settings-content">
+                        <div class="settings-section">
+                            <label>Select regex patterns for analysis</label>
+                            <div id="pattern-list-container" class="pattern-list">
+                                <div class="spinner"></div> Loading patterns...
+                            </div>
+                        </div>
+                        <div class="button-group">
+                            <button id="rescan-button" class="action-button" title="Re-scan all saved JS using selected patterns">Re-scan Project</button>
+                            <button id="save-patterns-button" class="action-button save-button">Save Selection</button>
+                        </div>
+                        <div id="patterns-feedback" class="feedback"></div>
+                        <div id="rescan-status"></div>
+                    </div>
                 </details>
+                
             </div>
-
-             <div class="table-actions">
-                 <button id="analyze-selected-button" class="action-button analyze-button" <%= !isLLMEnabled ? 'disabled' : '' %> title="<%= isLLMEnabled ? 'Analyze selected script(s) with LLM' : 'LLM disabled' %>">Analyze Selected (<span id="selected-count">0</span>) with LLM</button> <%# Title change %>
-                 <% if (!isLLMEnabled) { %>
-                     <span style="margin-left: 10px; font-style: italic; color: var(--text-muted);">(LLM disabled)</span>
-                 <% } %>
-             </div>
-
+            
+            <!-- Table Actions -->
+            <div class="table-actions">
+                <button id="analyze-selected-button" class="action-button analyze-button" <%= !isLLMEnabled ? 'disabled' : '' %> title="<%= isLLMEnabled ? 'Analyze selected scripts with LLM' : 'LLM is disabled' %>">
+                    Analyze Selected (<span id="selected-count">0</span>) with LLM
+                </button>
+                <% if (!isLLMEnabled) { %>
+                    <span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">LLM disabled — set GEMINI_API_KEY</span>
+                <% } %>
+            </div>
+            
+            <!-- Findings Table -->
             <div class="table-container" id="table-scroll-container">
-                <div id="loading-overlay" class="loading-overlay"><div class="spinner"></div>Batch Analyzing...</div>
+                <div id="loading-overlay" class="loading-overlay">
+                    <div class="spinner"></div>
+                    Analyzing with LLM...
+                </div>
+                
                 <table>
                     <thead>
-                         <tr>
-                             <%# Updated Headers - 6 columns %>
-                             <th class="id-col sortable" id="sort-by-id">ID</th>
-                             <th class="select-col"><input type="checkbox" id="select-all-checkbox" title="Select/Deselect All Visible"></th>
-                             <th class="ts-col">First Seen</th> <%# Renamed Header %>
-                             <th class="url-col">URL</th>
-                             <th class="source-col">Analysis Summary</th> <%# Renamed Header %>
-                             <th class="actions-col">Actions</th>
-                         </tr>
-                     </thead>
+                        <tr>
+                            <th class="id-col sortable" id="sort-by-id">ID</th>
+                            <th class="select-col">
+                                <input type="checkbox" id="select-all-checkbox" title="Select/Deselect All">
+                            </th>
+                            <th class="ts-col">First Seen</th>
+                            <th class="url-col">URL</th>
+                            <th class="source-col">Analysis</th>
+                            <th class="actions-col">Actions</th>
+                        </tr>
+                    </thead>
                     <tbody id="findingsTableBody">
-                        <%# Data structure of 'findings' passed here is now different (analyzed_scripts) %>
                         <% if (findings.length === 0) { %>
-                            <%# Colspan updated to 6 %>
-                            <tr id="no-findings-row"><td colspan="6" class="no-findings">No analyzed scripts found for project '<%= projectName %>'. Waiting...</td></tr>
+                            <tr id="no-findings-row">
+                                <td colspan="6" class="no-findings">
+                                    No scripts found for project '<%= projectName %>'. Waiting for data...
+                                </td>
+                            </tr>
                         <% } else { %>
-                            <% findings.forEach(function(script) { %> <%# Changed variable name %>
-                                <%# Main row represents the script file %>
+                            <% findings.forEach(function(script) { %>
+                                <!-- Finding Row -->
                                 <tr class="finding-row" data-finding-id="<%= script.id %>" data-url="<%= script.url %>" data-content-hash="<%= script.content_hash || '' %>">
-                                    <td class="id-col"><%= script.id %></td>
-                                    <td class="select-col"><input type="checkbox" class="row-checkbox" value="<%= script.id %>"></td> <%# Value is now script ID %>
+                                    <td class="id-col">#<%= script.id %></td>
+                                    <td class="select-col">
+                                        <input type="checkbox" class="row-checkbox" value="<%= script.id %>">
+                                    </td>
                                     <td class="ts-col"><%= new Date(script.timestamp).toLocaleString() %></td>
                                     <td class="url-col" title="<%= script.url %>"><%= script.url %></td>
-                                    <%# Analysis Summary Placeholder - Real data shown in details %>
                                     <td class="source-col">
                                         <% if (Array.isArray(script.analysis_summary) && script.analysis_summary.length > 0) { %>
-                                            <%= script.analysis_summary.length %> finding(s)
+                                            <code><%= script.analysis_summary.length %></code> finding<%= script.analysis_summary.length !== 1 ? 's' : '' %>
                                         <% } else { %>
-                                            No regex matches
-                                            <% } %>
-                                            <%# Add Source Map indicator here %>
-                                            <% if (script.has_sourcemap) { %>
-                                                <span class="sourcemap-tag" title="Source map detected">Source Map</span>
-                                            <% } %>
-                                        </td>
+                                            <span style="color: var(--text-muted);">No matches</span>
+                                        <% } %>
+                                        <% if (script.has_sourcemap) { %>
+                                            <span class="sourcemap-tag" title="Source map detected">MAP</span>
+                                        <% } %>
+                                    </td>
                                     <td class="actions-col">
                                         <button class="view-js-button action-button view-button" data-content-hash="<%= script.content_hash || '' %>" title="View JS Source" <% if (!script.content_hash) { %>disabled<% } %>>JS</button>
-                                        <button class="run-ast-button action-button ast-button" data-finding-id="<%= script.id %>" title="Run AST Analysis" <% if (!script.content_hash) { %>disabled<% } %>>AST</button> <%# ID is script ID %>
+                                        <button class="run-ast-button action-button ast-button" data-finding-id="<%= script.id %>" title="Run AST Analysis" <% if (!script.content_hash) { %>disabled<% } %>>AST</button>
                                         <div class="llm-dropdown">
-                                            <button class="action-button analyze-button llm-dropdown-button" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %> title="<%= isLLMEnabled && script.content_hash ? 'LLM Analysis Options' : (isLLMEnabled ? 'LLM (Needs JS Content)' : 'LLM disabled') %>"> LLM &#9662; </button> <%# ID is script ID %>
+                                            <button class="action-button analyze-button llm-dropdown-button" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %> title="<%= isLLMEnabled && script.content_hash ? 'LLM Analysis' : (!isLLMEnabled ? 'LLM disabled' : 'No content') %>">
+                                                LLM ▾
+                                            </button>
                                             <div class="llm-dropdown-content">
                                                 <button class="llm-action-button" data-action="default" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %>>Analyze (Default)</button>
-                                                <button class="llm-action-button" data-action="with_ast" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %> title="<%= isLLMEnabled && script.content_hash ? 'Runs AST first' : (!isLLMEnabled ? 'LLM Disabled' : 'Needs JS content') %>">Analyze w/ AST</button>
-                                                <button class="llm-action-button" data-action="modify_prompt" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %>>Modify Prompt...</button>
+                                                <button class="llm-action-button" data-action="with_ast" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %> title="Runs AST first, then LLM">Analyze with AST</button>
+                                                <button class="llm-action-button" data-action="modify_prompt" data-finding-id="<%= script.id %>" <%= !isLLMEnabled || !script.content_hash ? 'disabled' : '' %>>Custom Prompt...</button>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-                                <%# Details row shows the individual regex matches, AST results, LLM results %>
+                                
+                                <!-- Details Row -->
                                 <tr class="details-row" id="details-row-<%= script.id %>">
-                                    <%# --- Colspan updated to 7 --- %>
                                     <td colspan="6" class="details-cell">
-                                        <%# Section to display regex matches from analysis_summary %>
+                                        
+                                        <!-- Regex Matches Section -->
                                         <div class="details-section" id="regex-matches-<%= script.id %>">
                                             <h4>Regex Matches</h4>
-                                            <div class="details-content"> <%# No loading state needed here %>
+                                            <div class="details-content">
                                                 <% if (Array.isArray(script.analysis_summary) && script.analysis_summary.length > 0) { %>
-                                                    <ul style="margin:0; padding-left: 20px; list-style-type: disc;">
+                                                    <ul>
                                                         <% script.analysis_summary.forEach(function(match) { %>
-                                                            <li style="margin-bottom: 10px;">
+                                                            <li>
                                                                 <strong>File:</strong> <code><%- match.sf %></code><br>
                                                                 <strong>Pattern:</strong> <code><%- match.p %></code><br>
-                                                                <strong>Match:</strong> <pre style="background-color: #f0f0f0; border: 1px solid #ddd; padding: 3px 6px; border-radius: 3px; margin-top: 3px; white-space: pre-wrap; word-break: break-all; font-size: 0.9em;"><code><%- match.m %></code></pre>
+                                                                <strong>Match:</strong>
+                                                                <pre><code><%- match.m %></code></pre>
                                                             </li>
                                                         <% }); %>
                                                     </ul>
                                                 <% } else { %>
-                                                    <p>No regex matches found with current patterns.</p>
+                                                    <p style="color: var(--text-muted); margin: 0;">No regex matches found with current patterns.</p>
                                                 <% } %>
                                             </div>
                                         </div>
-                                        <%# AST and LLM sections remain structurally similar %>
-                                        <div class="details-section" id="ast-details-<%= script.id %>" style="display: none;"> <h4>AST Results</h4> <div class="details-content loading"><span>Run AST analysis to see results.</span></div> </div>
-                                        <div class="details-section" id="llm-details-<%= script.id %>" style="display: none;"> <h4>LLM Results</h4> <div class="details-content loading"><div class="spinner"></div><span>Awaiting LLM analysis...</span></div> </div>
+                                        
+                                        <!-- AST Results Section -->
+                                        <div class="details-section" id="ast-details-<%= script.id %>" style="display: none;">
+                                            <h4>AST Results</h4>
+                                            <div class="details-content loading">
+                                                <span>Run AST analysis to see results.</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- LLM Results Section -->
+                                        <div class="details-section" id="llm-details-<%= script.id %>" style="display: none;">
+                                            <h4>LLM Results</h4>
+                                            <div class="details-content loading">
+                                                <div class="spinner"></div>
+                                                <span>Awaiting LLM analysis...</span>
+                                            </div>
+                                        </div>
+                                        
                                     </td>
                                 </tr>
                             <% }); %>
                         <% } %>
                     </tbody>
                 </table>
-                 <div id="show-more-container" style="text-align: center; padding: 20px;">
-                     <button id="show-more-button" class="action-button save-button" <%= !initialHasMore ? 'style="display:none;"' : '' %>> Show More </button>
-                     <span id="no-more-findings" style="color: var(--text-secondary); display: <%= initialHasMore ? 'none' : 'inline' %>;"> No more findings. </span>
+                
+                <!-- Show More -->
+                <div id="show-more-container">
+                    <button id="show-more-button" class="action-button" <%= !initialHasMore ? 'style="display:none;"' : '' %>>
+                        Load More
+                    </button>
+                    <span id="no-more-findings" style="display: <%= initialHasMore ? 'none' : 'inline' %>;">
+                        All scripts loaded
+                    </span>
                 </div>
             </div>
+            
         </main>
 
-       <aside id="side-pane">
-           <div class="side-pane-header"> <span id="side-pane-title" class="side-pane-title">JavaScript Source</span> <div class="side-pane-controls"> <label title="Toggle line wrapping"><input type="checkbox" id="wrap-lines-checkbox"> Wrap</label> <button id="close-side-pane-button" title="Close Panel">&times;</button> </div> </div>
-           <div id="side-pane-content"> <div class="loading-placeholder"><div class="spinner"></div><span>Loading...</span></div> <pre style="display:none;"><code id="side-pane-code" class="language-js"></code></pre> </div>
-       </aside>
+        <!-- ========== SIDE PANE (Code Viewer) ========== -->
+        <aside id="side-pane">
+            <div class="side-pane-header">
+                <span id="side-pane-title" class="side-pane-title">JavaScript Source</span>
+                <div class="side-pane-controls">
+                    <label title="Toggle line wrapping">
+                        <input type="checkbox" id="wrap-lines-checkbox"> Wrap
+                    </label>
+                    <button id="close-side-pane-button" title="Close Panel">&times;</button>
+                </div>
+            </div>
+            <div id="side-pane-content">
+                <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                    <span>Loading...</span>
+                </div>
+                <pre style="display:none;"><code id="side-pane-code" class="language-js"></code></pre>
+            </div>
+        </aside>
     </div>
 
+    <!-- ========== LLM PROMPT MODAL ========== -->
     <div id="llm-prompt-modal" class="modal-overlay">
-       <div class="modal-content">
-           <h3>Modify LLM Prompt</h3>
-           <input type="hidden" id="modal-finding-id"> <%# This ID is now script ID %>
-           <label for="llm-prompt-textarea">Edit the prompt before sending:</label>
-           <textarea id="llm-prompt-textarea" rows="12"></textarea>
-           <div id="modal-feedback" class="feedback"></div>
-           <div class="modal-actions">
-               <button id="modal-cancel-button" class="action-button button-secondary-bg">Cancel</button>
-               <button id="modal-send-button" class="action-button analyze-button">Send to LLM</button>
-           </div>
-       </div>
-   </div>
+        <div class="modal-content">
+            <h3>Custom LLM Prompt</h3>
+            <input type="hidden" id="modal-finding-id">
+            <label for="llm-prompt-textarea">Edit the prompt before sending:</label>
+            <textarea id="llm-prompt-textarea" rows="12" placeholder="Loading default prompt..."></textarea>
+            <div id="modal-feedback" class="feedback"></div>
+            <div class="modal-actions">
+                <button id="modal-cancel-button" class="action-button">Cancel</button>
+                <button id="modal-send-button" class="action-button analyze-button">Send to LLM</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- ========== SCRIPTS ========== -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
